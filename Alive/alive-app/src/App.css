@@ -62,12 +62,13 @@ body {
   flex-direction: column;
   align-items: center;
   overflow: hidden;
+  background-color: #000000;
 }
 
 .next-section {
   height: 100vh;
   width: 100%;
-  background-color: rgb(237, 237, 237);
+  background: linear-gradient(to bottom, #000000 0%, rgb(237, 237, 237) 15%, rgb(237, 237, 237) 100%);
   overflow: hidden;
   display: flex;
   flex-direction: column;
