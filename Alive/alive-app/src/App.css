@@ -470,18 +470,199 @@ body {
   max-width: 1200px;
   margin: 60px auto 0;
   padding: 0 20px;
+  text-align: center;
 }
 
-.cart-content h1 {
+.cart-title {
   font-family: 'Space Mono', monospace;
-  font-size: 2rem;
+  font-size: 32px;
+  margin-bottom: 1.5rem;
+  color: black;
+  text-align: center;
+  letter-spacing: -0.5px;
+}
+
+.wishlist-button {
+  background-color: rgba(0, 0, 0, 0.1);
+  border: none;
+  border-radius: 20px;
+  padding: 8px 24px;
+  font-family: 'Space Mono', monospace;
+  font-size: 14px;
+  color: black;
+  cursor: pointer;
+  transition: all 0.2s ease;
   margin-bottom: 2rem;
+}
+
+.wishlist-button:hover {
+  background-color: rgba(0, 0, 0, 0.15);
+}
+
+/* Cart Items */
+.cart-items {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.cart-item {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.item-image {
+  width: 80px;
+  height: 80px;
+  background-color: white;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.item-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.quantity-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: rgba(0, 0, 0, 0.1);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-family: 'Space Mono', monospace;
+  font-size: 14px;
+}
+
+.quantity-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.quantity-buttons button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Space Mono', monospace;
+  font-size: 14px;
+  color: black;
+  padding: 0 8px;
+  transition: all 0.2s ease;
+  min-width: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quantity-buttons button:hover:not(:disabled) {
+  transform: scale(1.1);
+}
+
+.quantity-buttons button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.quantity-buttons button.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.item-actions {
+  display: flex;
+  gap: 8px;
+  margin-left: 16px;
+}
+
+.item-actions button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+.item-actions button:hover {
+  transform: scale(1.1);
+}
+
+.item-actions button.liked {
+  animation: heartPop 0.3s ease;
+}
+
+@keyframes heartPop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.item-price {
+  font-family: 'Space Mono', monospace;
+  font-size: 14px;
   color: black;
 }
 
-.cart-content p {
+.item-divider {
+  height: 1px;
+  background-color: rgba(0, 0, 0, 0.1);
+  margin: 20px 0;
+}
+
+/* Cart Total */
+.cart-total {
+  text-align: right;
   font-family: 'Space Mono', monospace;
-  color: #666;
-  text-align: center;
-  margin-top: 4rem;
+  font-size: 14px;
+  color: black;
+  margin: 40px 0;
+  padding-right: 20px;
+}
+
+/* Cart Buttons */
+.cart-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+
+.pay-now-button, .back-button {
+  background-color: rgba(0, 0, 0, 0.1);
+  border: none;
+  border-radius: 20px;
+  padding: 12px 32px;
+  font-family: 'Space Mono', monospace;
+  font-size: 14px;
+  color: black;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-width: 240px;
+}
+
+.pay-now-button svg, .back-button svg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pay-now-button:hover, .back-button:hover {
+  background-color: rgba(0, 0, 0, 0.15);
 }
