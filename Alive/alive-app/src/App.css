@@ -102,13 +102,21 @@ body {
   z-index: 2500;
 }
 
-/* Default color for home section (white) */
-.nav-buttons .icon-button {
+.nav-buttons .icon-button.light-icon {
   color: white;
 }
 
-/* Color for next section (black) */
+.nav-buttons .icon-button.dark-icon {
+  color: black;
+}
+
+/* Make icons black when over the light section */
 .next-section-visible .nav-buttons .icon-button {
+  color: black;
+}
+
+/* Keep icons black in cart page */
+.cart-page .nav-buttons .icon-button {
   color: black;
 }
 
@@ -476,9 +484,4 @@ body {
   color: #666;
   text-align: center;
   margin-top: 4rem;
-}
-
-/* Ensure black color for icons on cart page */
-.cart-page .nav-buttons .icon-button {
-  color: black;
 }

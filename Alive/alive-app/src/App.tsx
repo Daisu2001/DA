@@ -8,7 +8,21 @@ function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isNextSectionVisible, setIsNextSectionVisible] = useState(false);
   const [isWhatHowOpen, setIsWhatHowOpen] = useState(false);
+  const [isDarkBackground, setIsDarkBackground] = useState(true);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY;
+      const windowHeight = window.innerHeight;
+      setIsDarkBackground(scrollPosition < windowHeight * 0.5);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Initial check
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -30,7 +44,7 @@ function App() {
     return () => observer.disconnect();
   }, []);
 
-  const handleScroll = (targetId?: string) => {
+  const handleScrollClick = (targetId?: string) => {
     if (targetId) {
       const element = document.getElementById(targetId);
       if (element) {
@@ -46,17 +60,17 @@ function App() {
   };
 
   const HomePage = () => (
-    <>
+    <div className="app">
       <nav className={`nav-buttons ${isMenuOpen || isWhatHowOpen ? 'hidden' : ''}`}>
         <button 
-          className="icon-button menu-button" 
+          className={`icon-button menu-button ${isDarkBackground ? 'light-icon' : 'dark-icon'}`}
           aria-label="Menu"
           onClick={() => setIsMenuOpen(true)}
         >
           <Menu size={24} />
         </button>
         <button 
-          className="icon-button cart-button" 
+          className={`icon-button cart-button ${isDarkBackground ? 'light-icon' : 'dark-icon'}`}
           aria-label="Shopping Cart"
           onClick={() => navigate('/cart')}
         >
@@ -69,7 +83,7 @@ function App() {
         <div className="menu-content">
           <button 
             className="menu-item"
-            onClick={() => handleScroll('what-and-how')}
+            onClick={() => handleScrollClick('what-and-how')}
           >
             What we do
           </button>
@@ -129,7 +143,7 @@ function App() {
         <div className={`center-container ${isMenuOpen || isWhatHowOpen ? 'blur' : ''}`}>
           <img src="/alivetext.png" alt="ALIVE Text" className="centered-image" />
         </div>
-        <button onClick={() => handleScroll()} className="discover-button">
+        <button onClick={() => handleScrollClick()} className="discover-button">
           <span>Discover</span>
           <ChevronDown size={20} />
         </button>
@@ -148,18 +162,16 @@ function App() {
           className={`girl-image ${isWhatHowOpen ? 'blur' : ''}`} 
         />
       </section>
-    </>
+    </div>
   );
 
   return (
-    <Routes>
-      <Route path="/" element={
-        <div className={`app ${isNextSectionVisible ? 'next-section-visible' : ''}`}>
-          <HomePage />
-        </div>
-      } />
-      <Route path="/cart" element={<CartPage />} />
-    </Routes>
+    <div className={isNextSectionVisible ? 'next-section-visible' : ''}>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/cart" element={<CartPage />} />
+      </Routes>
+    </div>
   );
 }
 
