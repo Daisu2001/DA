@@ -1,16 +1,69 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import './App.css';
-import { Menu, ShoppingCart, Phone, ChevronDown, X } from 'lucide-react';
+import { Menu, ShoppingCart, Phone, ChevronDown, X, Heart } from 'lucide-react';
 import CartPage from './CartPage';
+
+// Add interface for brand data
+interface Brand {
+  id: string;
+  name: string;
+  image: string;
+  description: string;
+  rating: number;
+}
+
+const brands: Brand[] = [
+  { 
+    id: 'valentino', 
+    name: 'VALENTINO', 
+    image: '/ValBack.png',
+    description: 'Luxury Italian fashion house founded in 1960.',
+    rating: 4.8
+  },
+  { 
+    id: 'prada', 
+    name: 'PRADA', 
+    image: '/PradaBack.png',
+    description: 'Leading fashion and luxury goods brand since 1913.',
+    rating: 4.9
+  },
+  { 
+    id: 'chanel', 
+    name: 'CHANEL', 
+    image: '/ChanelBack.png',
+    description: 'Iconic French luxury fashion house established in 1909.',
+    rating: 4.9
+  }
+];
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isNextSectionVisible, setIsNextSectionVisible] = useState(false);
   const [isWhatHowOpen, setIsWhatHowOpen] = useState(false);
   const [isDarkBackground, setIsDarkBackground] = useState(true);
-  const [activeFilter, setActiveFilter] = useState('new');
+  const [hoveredBrand, setHoveredBrand] = useState<string | null>(null);
+  const [scrollY, setScrollY] = useState(0);
+  const [favorites, setFavorites] = useState<string[]>(() => {
+    const savedFavorites = localStorage.getItem('brandFavorites');
+    return savedFavorites ? JSON.parse(savedFavorites) : [];
+  });
   const navigate = useNavigate();
+
+  // Save favorites to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('brandFavorites', JSON.stringify(favorites));
+  }, [favorites]);
+
+  const toggleFavorite = (brandId: string) => {
+    setFavorites(prev => {
+      if (prev.includes(brandId)) {
+        return prev.filter(id => id !== brandId);
+      } else {
+        return [...prev, brandId];
+      }
+    });
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -43,6 +96,15 @@ function App() {
     }
 
     return () => observer.disconnect();
+  }, []);
+
+  // Add scroll listener for parallax
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const handleScrollClick = (targetId?: string) => {
@@ -147,7 +209,7 @@ function App() {
 
       <section className="home-section">
         <div className={`center-container ${isMenuOpen || isWhatHowOpen ? 'blur' : ''}`}>
-          <img src="/alivetext.png" alt="ALIVE Text" className="centered-image" />
+          <img src="/AliveText.png" alt="ALIVE Text" className="centered-image" />
         </div>
         <button onClick={() => handleScrollClick()} className="discover-button">
           <span>Discover</span>
@@ -163,7 +225,7 @@ function App() {
           What we do
         </button>
         <img 
-          src="/girl.png" 
+          src="/Girl.png" 
           alt="Girl in white sweater" 
           className={`girl-image ${isWhatHowOpen ? 'blur' : ''}`} 
         />
@@ -172,28 +234,65 @@ function App() {
       <section id="our-brands" className="brands-section">
         <h1>Our brands</h1>
         <div className="brands-filter-bar">
-          <button 
-            className={`filter-button ${activeFilter === 'name' ? 'active' : ''}`}
-            onClick={() => setActiveFilter('name')}
-          >
+          <button className="filter-button">
             <span>Name</span>
           </button>
-          <button 
-            className={`filter-button ${activeFilter === 'new' ? 'active' : ''}`}
-            onClick={() => setActiveFilter('new')}
-          >
+          <button className="filter-button active">
             <span>New added</span>
           </button>
-          <button 
-            className={`filter-button ${activeFilter === 'favorites' ? 'active' : ''}`}
-            onClick={() => setActiveFilter('favorites')}
-          >
+          <button className="filter-button">
             <span>Favorites</span>
           </button>
-          <div 
-            className="filter-indicator"
-            data-active={activeFilter}
-          ></div>
+          <div className="filter-indicator"></div>
+        </div>
+        <div className="brands-list">
+          {brands.map((brand, index) => (
+            <div 
+              key={brand.id} 
+              className="brand-card"
+            >
+              <div className="brand-content">
+                <div className="brand-background-wrapper">
+                  <img 
+                    src={brand.image} 
+                    alt={brand.name} 
+                    className="brand-background" 
+                  />
+                  <div className="brand-overlay"></div>
+                </div>
+                <div className="brand-info">
+                  <div className="brand-header">
+                    <h2>{brand.name}</h2>
+                    <div className="brand-stats">
+                      <span className="brand-rating">★ {brand.rating}</span>
+                    </div>
+                  </div>
+                  <p className="brand-description">{brand.description}</p>
+                  <div className="brand-actions">
+                    <button className="discover-brand-button">
+                      Discover this brand
+                      <span className="button-arrow">→</span>
+                    </button>
+                    <button 
+                      className={`favorite-button ${favorites.includes(brand.id) ? 'active' : ''}`}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        toggleFavorite(brand.id);
+                      }}
+                      aria-label="Toggle favorite"
+                    >
+                      <Heart 
+                        size={24} 
+                        fill={favorites.includes(brand.id) ? 'white' : 'none'}
+                        style={{ pointerEvents: 'none' }}
+                      />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
     </div>

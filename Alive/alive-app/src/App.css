@@ -776,6 +776,16 @@ body {
   letter-spacing: -0.5px;
 }
 
+.brands-list {
+  width: 100%;
+  max-width: 1200px;
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  will-change: transform;
+}
+
 .brands-filter-bar {
   background-color: white;
   border-radius: 30px;
@@ -801,11 +811,6 @@ body {
   cursor: pointer;
   position: relative;
   z-index: 1;
-  transition: color 0.4s ease;
-}
-
-.filter-button:hover {
-  opacity: 0.7;
 }
 
 .filter-button.active {
@@ -819,29 +824,187 @@ body {
   background-color: black;
   border-radius: 22px;
   top: 8px;
-  left: 8px;
-  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  left: calc(33.333% + 2.666px);
   pointer-events: none;
-  will-change: transform;
 }
 
-.filter-indicator[data-active="name"] {
-  transform: translateX(0);
+.brand-card {
+  width: 100%;
+  height: 200px;
+  border-radius: 30px;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
 }
 
-.filter-indicator[data-active="new"] {
-  transform: translateX(100%);
+.brand-background-wrapper {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
 
-.filter-indicator[data-active="favorites"] {
-  transform: translateX(200%);
+.brand-background {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.filter-button.new-added {
+.brand-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.7) 0%,
+    rgba(0, 0, 0, 0.4) 50%,
+    rgba(0, 0, 0, 0.2) 100%
+  );
+}
+
+.brand-info {
+  position: relative;
+  z-index: 1;
+  padding: 25px 30px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 15px;
+}
+
+.brand-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.brand-header h2 {
+  color: white;
+  font-family: 'Space Mono', monospace;
+  font-size: 28px;
+  margin: 0;
+  letter-spacing: -1px;
+}
+
+.brand-stats {
+  display: flex;
+  align-items: center;
+}
+
+.brand-rating {
+  color: #FFD700;
+  font-family: 'Space Mono', monospace;
+  font-size: 14px;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 4px 12px;
+  border-radius: 12px;
+  backdrop-filter: blur(5px);
+}
+
+.brand-description {
+  color: rgba(255, 255, 255, 0.8);
+  font-family: 'Space Mono', monospace;
+  font-size: 14px;
+  margin: 0;
+  max-width: 70%;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease;
+}
+
+.brand-card:hover .brand-description {
+  opacity: 1;
+  visibility: visible;
+}
+
+.brand-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-top: auto;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease;
+}
+
+.brand-card:hover .brand-actions {
+  opacity: 1;
+  visibility: visible;
+}
+
+.discover-brand-button {
+  background-color: white;
+  color: black;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-family: 'Space Mono', monospace;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.discover-brand-button:hover {
   background-color: black;
   color: white;
 }
 
-.filter-button.new-added:hover {
-  opacity: 0.9;
+.favorite-button {
+  position: relative;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(5px);
+  flex-shrink: 0;
+  transition: background-color 0.2s ease;
+  z-index: 10;
+}
+
+/* Show favorite button always when card is hovered */
+.brand-card:hover .favorite-button {
+  opacity: 1;
+  visibility: visible;
+}
+
+.favorite-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.favorite-button.active {
+  background: #ff4444;
+  opacity: 1;
+  visibility: visible;
+}
+
+.favorite-button.active:hover {
+  background: #ff6666;
+}
+
+/* Ensure the heart icon doesn't interfere with hover states */
+.favorite-button svg {
+  pointer-events: none;
+  position: relative;
+  z-index: 1;
+}
+
+/* Keep content visible while interacting with favorite button */
+.brand-card .brand-content:hover .brand-description,
+.brand-card .brand-content:hover .brand-actions,
+.brand-card .brand-content:hover .discover-brand-button {
+  opacity: 1;
+  visibility: visible;
 }
