@@ -9,6 +9,7 @@ function App() {
   const [isNextSectionVisible, setIsNextSectionVisible] = useState(false);
   const [isWhatHowOpen, setIsWhatHowOpen] = useState(false);
   const [isDarkBackground, setIsDarkBackground] = useState(true);
+  const [activeFilter, setActiveFilter] = useState('new');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -88,7 +89,12 @@ function App() {
             What we do
           </button>
           <div className="menu-divider"></div>
-          <button className="menu-item">Brands</button>
+          <button 
+            className="menu-item"
+            onClick={() => handleScrollClick('our-brands')}
+          >
+            Our brands
+          </button>
           <div className="menu-divider"></div>
           <button className="menu-item">About us</button>
           <div className="menu-divider"></div>
@@ -161,6 +167,34 @@ function App() {
           alt="Girl in white sweater" 
           className={`girl-image ${isWhatHowOpen ? 'blur' : ''}`} 
         />
+      </section>
+
+      <section id="our-brands" className="brands-section">
+        <h1>Our brands</h1>
+        <div className="brands-filter-bar">
+          <button 
+            className={`filter-button ${activeFilter === 'name' ? 'active' : ''}`}
+            onClick={() => setActiveFilter('name')}
+          >
+            <span>Name</span>
+          </button>
+          <button 
+            className={`filter-button ${activeFilter === 'new' ? 'active' : ''}`}
+            onClick={() => setActiveFilter('new')}
+          >
+            <span>New added</span>
+          </button>
+          <button 
+            className={`filter-button ${activeFilter === 'favorites' ? 'active' : ''}`}
+            onClick={() => setActiveFilter('favorites')}
+          >
+            <span>Favorites</span>
+          </button>
+          <div 
+            className="filter-indicator"
+            data-active={activeFilter}
+          ></div>
+        </div>
       </section>
     </div>
   );
