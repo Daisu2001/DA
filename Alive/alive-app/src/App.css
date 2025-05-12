@@ -67,8 +67,12 @@ body {
 .next-section {
   height: 100vh;
   width: 100%;
-  background-color: #FFFFFF;
+  background-color: #F5F5F5;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
 }
 
 .nav-buttons {
@@ -80,25 +84,38 @@ body {
   display: flex;
   justify-content: space-between;
   z-index: 2500;
-  mix-blend-mode: difference;
+  opacity: 1;
+  visibility: visible;
+  transition: all 0.3s ease;
+  pointer-events: auto;
 }
 
-.icon-button {
+.nav-buttons .icon-button {
   background: transparent;
   border: none;
-  color: white;
   cursor: pointer;
   padding: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
-  mix-blend-mode: difference;
+  z-index: 2500;
 }
 
-.icon-button:hover {
-  opacity: 0.8;
-  transform: scale(1.1);
+/* Default color for home section (white) */
+.nav-buttons .icon-button {
+  color: white;
+}
+
+/* Color for next section (black) */
+.next-section-visible .nav-buttons .icon-button {
+  color: black;
+}
+
+.nav-buttons.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
 }
 
 /* Sliding Menu */
@@ -164,8 +181,20 @@ body {
 }
 
 .menu-footer .icon-button {
+  background: transparent;
+  border: none;
   color: black;
+  cursor: pointer;
   padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.menu-footer .icon-button:hover {
+  opacity: 0.7;
+  transform: scale(1.1);
 }
 
 /* Backdrop */
@@ -317,4 +346,34 @@ body {
   60% {
     transform: translateY(-5px);
   }
+}
+
+.what-how-button {
+  margin-top: 80px;
+  background: transparent;
+  border: none;
+  font-family: 'Space Mono', monospace;
+  font-size: 32px;
+  color: #000;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  transition: opacity 0.2s ease;
+}
+
+.what-how-button:hover {
+  opacity: 0.7;
+}
+
+.girl-image {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  max-height: 70vh;
+  width: auto;
+  object-fit: contain;
 }

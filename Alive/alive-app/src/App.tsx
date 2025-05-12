@@ -1,9 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import { Menu, ShoppingCart, Phone, ChevronDown } from 'lucide-react';
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isNextSectionVisible, setIsNextSectionVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.target.classList.contains('next-section')) {
+            setIsNextSectionVisible(entry.isIntersecting);
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+
+    const nextSection = document.querySelector('.next-section');
+    if (nextSection) {
+      observer.observe(nextSection);
+    }
+
+    return () => observer.disconnect();
+  }, []);
 
   const handleScroll = () => {
     window.scrollTo({
@@ -13,8 +34,8 @@ function App() {
   };
 
   return (
-    <div className="app">
-      <nav className="nav-buttons">
+    <div className={`app ${isNextSectionVisible ? 'next-section-visible' : ''}`}>
+      <nav className={`nav-buttons ${isMenuOpen ? 'hidden' : ''}`}>
         <button 
           className="icon-button menu-button" 
           aria-label="Menu"
@@ -68,7 +89,12 @@ function App() {
       </section>
 
       <section className="next-section">
-        {/* Content for the next section will go here */}
+        <button className="what-how-button">
+          <span>¿What</span>
+          <span>&</span>
+          <span>How?</span>
+        </button>
+        <img src="/girl.png" alt="Girl in white sweater" className="girl-image" />
       </section>
     </div>
   );
