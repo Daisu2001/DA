@@ -506,8 +506,26 @@ body {
 }
 
 .cart-item {
+  position: relative;
+  padding: 20px;
   margin-bottom: 20px;
-  text-align: left;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.cart-item.fade-out {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.remove-button {
+  transition: all 0.2s ease;
+}
+
+.remove-button:hover {
+  color: #ff4444;
+  transform: scale(1.1);
 }
 
 .item-image {
@@ -610,8 +628,9 @@ body {
 
 .item-price {
   font-family: 'Space Mono', monospace;
-  font-size: 14px;
-  color: black;
+  font-size: 1.1em;
+  margin-top: 10px;
+  opacity: 0.9;
 }
 
 .item-divider {
@@ -665,4 +684,72 @@ body {
 
 .pay-now-button:hover, .back-button:hover {
   background-color: rgba(0, 0, 0, 0.15);
+}
+
+/* Delete Confirmation Popup */
+.delete-confirmation-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 40px;
+  border-radius: 20px;
+  z-index: 2000;
+  text-align: center;
+  min-width: 300px;
+  font-family: 'Space Mono', monospace;
+}
+
+.delete-confirmation-popup h2 {
+  margin: 0 0 30px 0;
+  font-size: 24px;
+  font-weight: normal;
+}
+
+.delete-confirmation-popup .close-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  color: black;
+  transition: opacity 0.2s ease;
+}
+
+.delete-confirmation-popup .close-button:hover {
+  opacity: 0.7;
+}
+
+.confirmation-buttons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.confirmation-buttons button {
+  background-color: rgba(0, 0, 0, 0.1);
+  border: none;
+  border-radius: 20px;
+  padding: 10px 30px;
+  font-family: 'Space Mono', monospace;
+  font-size: 14px;
+  color: black;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.confirmation-buttons button:last-child {
+  background-color: rgba(255, 68, 68, 0.1);
+  color: #ff4444;
+}
+
+.confirmation-buttons button:hover {
+  background-color: rgba(0, 0, 0, 0.15);
+}
+
+.confirmation-buttons button:last-child:hover {
+  background-color: rgba(255, 68, 68, 0.15);
 }

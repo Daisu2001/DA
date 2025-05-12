@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Heart, Trash2 } from 'lucide-react';
+import { ArrowLeft, Heart, Trash2, X } from 'lucide-react';
 import './App.css';
 
 function CartPage() {
@@ -12,18 +12,34 @@ function CartPage() {
 
   const [quantities, setQuantities] = useState<{ [key: number]: number }>(() => {
     const saved = localStorage.getItem('cartQuantities');
-    return saved ? JSON.parse(saved) : { 0: 1, 1: 1, 2: 1, 3: 1 };
+    return saved ? JSON.parse(saved) : {};
   });
 
-  // Save liked items to localStorage
+  // Mock prices for items
+  const itemPrices = [29.99, 39.99, 24.99, 34.99];
+  
+  // Track visible items and their animation states
+  const [visibleItems, setVisibleItems] = useState<number[]>(() => {
+    const saved = localStorage.getItem('cartVisibleItems');
+    return saved ? JSON.parse(saved) : [0, 1, 2, 3];
+  });
+  const [itemsToAnimate, setItemsToAnimate] = useState<number[]>([]);
+  
+  // Confirmation popup state
+  const [itemToDelete, setItemToDelete] = useState<number | null>(null);
+
+  // Save states to localStorage
   useEffect(() => {
     localStorage.setItem('likedCartItems', JSON.stringify(likedItems));
   }, [likedItems]);
 
-  // Save quantities to localStorage
   useEffect(() => {
     localStorage.setItem('cartQuantities', JSON.stringify(quantities));
   }, [quantities]);
+
+  useEffect(() => {
+    localStorage.setItem('cartVisibleItems', JSON.stringify(visibleItems));
+  }, [visibleItems]);
 
   const toggleLike = (index: number) => {
     setLikedItems(prev => 
@@ -36,8 +52,40 @@ function CartPage() {
   const updateQuantity = (index: number, increment: boolean) => {
     setQuantities(prev => ({
       ...prev,
-      [index]: Math.max(1, prev[index] + (increment ? 1 : -1))
+      [index]: Math.max(0, (prev[index] || 0) + (increment ? 1 : -1))
     }));
+  };
+
+  const confirmDelete = (index: number) => {
+    setItemToDelete(index);
+  };
+
+  const cancelDelete = () => {
+    setItemToDelete(null);
+  };
+
+  const removeItem = (index: number) => {
+    // Start fade-out animation
+    setItemsToAnimate(prev => [...prev, index]);
+    setItemToDelete(null);
+    
+    // Remove item after animation
+    setTimeout(() => {
+      setVisibleItems(prev => prev.filter(i => i !== index));
+      setQuantities(prev => {
+        const newQuantities = { ...prev };
+        delete newQuantities[index];
+        return newQuantities;
+      });
+    }, 300); // Match this with CSS animation duration
+  };
+
+  // Calculate total price
+  const calculateTotal = () => {
+    return visibleItems.reduce((total, index) => {
+      const quantity = quantities[index] || 0;
+      return total + (itemPrices[index] * quantity);
+    }, 0).toFixed(2);
   };
 
   return (
@@ -56,53 +104,62 @@ function CartPage() {
         <button className="wishlist-button">Wishlist</button>
         
         <div className="cart-items">
-          {[1, 2, 3, 4].map((item, index) => (
-            <div key={index} className="cart-item">
-              <div className="item-image"></div>
-              <div className="item-controls">
-                <div className="quantity-control">
-                  <span>Quantity: {quantities[index]}</span>
-                  <div className="quantity-buttons">
-                    <button 
-                      aria-label="Decrease quantity"
-                      onClick={() => updateQuantity(index, false)}
-                      className={quantities[index] <= 1 ? 'disabled' : ''}
-                      disabled={quantities[index] <= 1}
-                    >
-                      -
-                    </button>
-                    <button 
-                      aria-label="Increase quantity"
-                      onClick={() => updateQuantity(index, true)}
-                    >
-                      +
-                    </button>
+          {[0, 1, 2, 3].map((index) => (
+            visibleItems.includes(index) && (
+              <div 
+                key={index} 
+                className={`cart-item ${itemsToAnimate.includes(index) ? 'fade-out' : ''}`}
+              >
+                <div className="item-image"></div>
+                <div className="item-controls">
+                  <div className="quantity-control">
+                    <span>Quantity: {quantities[index] || 0}</span>
+                    <div className="quantity-buttons">
+                      <button 
+                        aria-label="Decrease quantity"
+                        onClick={() => updateQuantity(index, false)}
+                        className={(quantities[index] || 0) <= 0 ? 'disabled' : ''}
+                        disabled={(quantities[index] || 0) <= 0}
+                      >
+                        -
+                      </button>
+                      <button 
+                        aria-label="Increase quantity"
+                        onClick={() => updateQuantity(index, true)}
+                      >
+                        +
+                      </button>
+                    </div>
+                    <div className="item-actions">
+                      <button 
+                        aria-label="Add to wishlist"
+                        onClick={() => toggleLike(index)}
+                        className={likedItems.includes(index) ? 'liked' : ''}
+                      >
+                        <Heart 
+                          size={16} 
+                          fill={likedItems.includes(index) ? 'black' : 'none'}
+                        />
+                      </button>
+                      <button 
+                        aria-label="Remove item"
+                        onClick={() => confirmDelete(index)}
+                        className="remove-button"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
                   </div>
-                  <div className="item-actions">
-                    <button 
-                      aria-label="Add to wishlist"
-                      onClick={() => toggleLike(index)}
-                      className={likedItems.includes(index) ? 'liked' : ''}
-                    >
-                      <Heart 
-                        size={16} 
-                        fill={likedItems.includes(index) ? 'black' : 'none'}
-                      />
-                    </button>
-                    <button aria-label="Remove item">
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
+                  <div className="item-price">${itemPrices[index]}</div>
                 </div>
-                <div className="item-price">--- $</div>
+                <div className="item-divider"></div>
               </div>
-              <div className="item-divider"></div>
-            </div>
+            )
           ))}
         </div>
 
         <div className="cart-total">
-          <span>Total: --- $</span>
+          <span>Total: ${calculateTotal()}</span>
         </div>
 
         <div className="cart-buttons">
@@ -116,6 +173,23 @@ function CartPage() {
             Back to Alive
           </button>
         </div>
+
+        {/* Confirmation Popup */}
+        {itemToDelete !== null && (
+          <>
+            <div className="backdrop" onClick={cancelDelete}></div>
+            <div className="delete-confirmation-popup">
+              <button className="close-button" onClick={cancelDelete}>
+                <X size={24} />
+              </button>
+              <h2>Remove Item?</h2>
+              <div className="confirmation-buttons">
+                <button onClick={cancelDelete}>Cancel</button>
+                <button onClick={() => removeItem(itemToDelete)}>Remove</button>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
