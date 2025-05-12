@@ -27,11 +27,19 @@ function App() {
     return () => observer.disconnect();
   }, []);
 
-  const handleScroll = () => {
-    window.scrollTo({
-      top: window.innerHeight,
-      behavior: 'smooth'
-    });
+  const handleScroll = (targetId?: string) => {
+    if (targetId) {
+      const element = document.getElementById(targetId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      window.scrollTo({
+        top: window.innerHeight,
+        behavior: 'smooth'
+      });
+    }
+    setIsMenuOpen(false);
   };
 
   return (
@@ -52,7 +60,12 @@ function App() {
       {/* Sliding Menu */}
       <div className={`sliding-menu ${isMenuOpen ? 'open' : ''}`}>
         <div className="menu-content">
-          <button className="menu-item">What we do</button>
+          <button 
+            className="menu-item"
+            onClick={() => handleScroll('what-and-how')}
+          >
+            What we do
+          </button>
           <div className="menu-divider"></div>
           <button className="menu-item">Brands</button>
           <div className="menu-divider"></div>
@@ -106,20 +119,18 @@ function App() {
         <div className={`center-container ${isMenuOpen || isWhatHowOpen ? 'blur' : ''}`}>
           <img src="/alivetext.png" alt="ALIVE Text" className="centered-image" />
         </div>
-        <button onClick={handleScroll} className="discover-button">
+        <button onClick={() => handleScroll()} className="discover-button">
           <span>Discover</span>
           <ChevronDown size={20} />
         </button>
       </section>
 
-      <section className="next-section">
+      <section id="what-and-how" className="next-section">
         <button 
           className="what-how-button"
           onClick={() => setIsWhatHowOpen(true)}
         >
-          <span>¿What</span>
-          <span>&</span>
-          <span>How?</span>
+          What we do
         </button>
         <img 
           src="/girl.png" 

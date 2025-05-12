@@ -349,23 +349,41 @@ body {
 }
 
 .what-how-button {
-  margin-top: 80px;
+  margin-top: 160px;
   background: transparent;
   border: none;
   font-family: 'Space Mono', monospace;
   font-size: 32px;
   color: #000;
   cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  padding: 0;
-  transition: opacity 0.2s ease;
+  padding: 10px 20px;
+  transition: all 0.3s ease;
+  text-align: center;
+  width: 100%;
+  max-width: 300px;
+  line-height: 1;
+  position: relative;
+}
+
+.what-how-button::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 1px;
+  background-color: #000;
+  transition: width 0.3s ease;
 }
 
 .what-how-button:hover {
   opacity: 0.7;
+  transform: translateY(-2px);
+}
+
+.what-how-button:hover::after {
+  width: 100%;
 }
 
 .girl-image {
