@@ -5,28 +5,22 @@ import './App.css';
 
 function CartPage() {
   const navigate = useNavigate();
-  const [likedItems, setLikedItems] = useState<number[]>(() => {
-    const saved = localStorage.getItem('likedCartItems');
-    return saved ? JSON.parse(saved) : [];
-  });
 
-  const [quantities, setQuantities] = useState<{ [key: number]: number }>(() => {
-    const saved = localStorage.getItem('cartQuantities');
-    return saved ? JSON.parse(saved) : {};
-  });
+  // Clear all cart data on mount
+  useEffect(() => {
+    localStorage.removeItem('likedCartItems');
+    localStorage.removeItem('cartQuantities');
+    localStorage.removeItem('cartVisibleItems');
+  }, []);
+
+  const [likedItems, setLikedItems] = useState<number[]>([]);
+  const [quantities, setQuantities] = useState<{ [key: number]: number }>({});
+  const [visibleItems, setVisibleItems] = useState<number[]>([0, 1, 2, 3]);
+  const [itemsToAnimate, setItemsToAnimate] = useState<number[]>([]);
+  const [itemToDelete, setItemToDelete] = useState<number | null>(null);
 
   // Mock prices for items
   const itemPrices = [29.99, 39.99, 24.99, 34.99];
-  
-  // Track visible items and their animation states
-  const [visibleItems, setVisibleItems] = useState<number[]>(() => {
-    const saved = localStorage.getItem('cartVisibleItems');
-    return saved ? JSON.parse(saved) : [0, 1, 2, 3];
-  });
-  const [itemsToAnimate, setItemsToAnimate] = useState<number[]>([]);
-  
-  // Confirmation popup state
-  const [itemToDelete, setItemToDelete] = useState<number | null>(null);
 
   // Save states to localStorage
   useEffect(() => {

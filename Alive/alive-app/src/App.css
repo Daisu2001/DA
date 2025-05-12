@@ -753,3 +753,94 @@ body {
 .confirmation-buttons button:last-child:hover {
   background-color: rgba(255, 68, 68, 0.15);
 }
+
+/* Brands Section */
+.brands-section {
+  min-height: 100vh;
+  width: 100%;
+  background-color: rgb(237, 237, 237);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 120px;
+  position: relative;
+}
+
+.brands-section h1 {
+  font-family: 'Space Mono', monospace;
+  font-size: 32px;
+  color: black;
+  margin-bottom: 40px;
+  font-weight: normal;
+  letter-spacing: -0.5px;
+}
+
+.brands-filter-bar {
+  background-color: white;
+  border-radius: 30px;
+  padding: 8px;
+  display: flex;
+  gap: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  margin: 0 20px;
+  max-width: 400px;
+  width: 100%;
+  position: relative;
+}
+
+.filter-button {
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 22px;
+  font-family: 'Space Mono', monospace;
+  font-size: 14px;
+  color: black;
+  cursor: pointer;
+  position: relative;
+  z-index: 1;
+  transition: color 0.4s ease;
+}
+
+.filter-button:hover {
+  opacity: 0.7;
+}
+
+.filter-button.active {
+  color: white;
+}
+
+.filter-indicator {
+  position: absolute;
+  height: calc(100% - 16px);
+  width: calc(33.333% - 5.333px);
+  background-color: black;
+  border-radius: 22px;
+  top: 8px;
+  left: 8px;
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: none;
+  will-change: transform;
+}
+
+.filter-indicator[data-active="name"] {
+  transform: translateX(0);
+}
+
+.filter-indicator[data-active="new"] {
+  transform: translateX(100%);
+}
+
+.filter-indicator[data-active="favorites"] {
+  transform: translateX(200%);
+}
+
+.filter-button.new-added {
+  background-color: black;
+  color: white;
+}
+
+.filter-button.new-added:hover {
+  opacity: 0.9;
+}
