@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import { Menu, ShoppingCart, Phone, ChevronDown } from 'lucide-react';
+import { Menu, ShoppingCart, Phone, ChevronDown, X } from 'lucide-react';
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isNextSectionVisible, setIsNextSectionVisible] = useState(false);
+  const [isWhatHowOpen, setIsWhatHowOpen] = useState(false);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -35,7 +36,7 @@ function App() {
 
   return (
     <div className={`app ${isNextSectionVisible ? 'next-section-visible' : ''}`}>
-      <nav className={`nav-buttons ${isMenuOpen ? 'hidden' : ''}`}>
+      <nav className={`nav-buttons ${isMenuOpen || isWhatHowOpen ? 'hidden' : ''}`}>
         <button 
           className="icon-button menu-button" 
           aria-label="Menu"
@@ -70,16 +71,39 @@ function App() {
         </div>
       </div>
 
+      {/* What & How Popup */}
+      <div className={`what-how-popup ${isWhatHowOpen ? 'open' : ''}`}>
+        <div className="popup-content">
+          <button 
+            className="close-button"
+            onClick={() => setIsWhatHowOpen(false)}
+          >
+            <X size={24} />
+          </button>
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            Ut enim ad minim veniam, quis nostrud exercitation ullamco
+            laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+            irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
+            nulla pariatur.
+          </p>
+        </div>
+      </div>
+
       {/* Backdrop */}
-      {isMenuOpen && (
+      {(isMenuOpen || isWhatHowOpen) && (
         <div 
           className="backdrop" 
-          onClick={() => setIsMenuOpen(false)}
+          onClick={() => {
+            setIsMenuOpen(false);
+            setIsWhatHowOpen(false);
+          }}
         ></div>
       )}
 
       <section className="home-section">
-        <div className={`center-container ${isMenuOpen ? 'blur' : ''}`}>
+        <div className={`center-container ${isMenuOpen || isWhatHowOpen ? 'blur' : ''}`}>
           <img src="/alivetext.png" alt="ALIVE Text" className="centered-image" />
         </div>
         <button onClick={handleScroll} className="discover-button">
@@ -89,12 +113,19 @@ function App() {
       </section>
 
       <section className="next-section">
-        <button className="what-how-button">
+        <button 
+          className="what-how-button"
+          onClick={() => setIsWhatHowOpen(true)}
+        >
           <span>¿What</span>
           <span>&</span>
           <span>How?</span>
         </button>
-        <img src="/girl.png" alt="Girl in white sweater" className="girl-image" />
+        <img 
+          src="/girl.png" 
+          alt="Girl in white sweater" 
+          className={`girl-image ${isWhatHowOpen ? 'blur' : ''}`} 
+        />
       </section>
     </div>
   );
