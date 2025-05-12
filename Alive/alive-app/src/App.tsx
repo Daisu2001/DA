@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import './App.css';
 import { Menu, ShoppingCart, Phone, ChevronDown, X } from 'lucide-react';
+import CartPage from './CartPage';
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isNextSectionVisible, setIsNextSectionVisible] = useState(false);
   const [isWhatHowOpen, setIsWhatHowOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -42,8 +45,8 @@ function App() {
     setIsMenuOpen(false);
   };
 
-  return (
-    <div className={`app ${isNextSectionVisible ? 'next-section-visible' : ''}`}>
+  const HomePage = () => (
+    <>
       <nav className={`nav-buttons ${isMenuOpen || isWhatHowOpen ? 'hidden' : ''}`}>
         <button 
           className="icon-button menu-button" 
@@ -52,7 +55,11 @@ function App() {
         >
           <Menu size={24} />
         </button>
-        <button className="icon-button cart-button" aria-label="Shopping Cart">
+        <button 
+          className="icon-button cart-button" 
+          aria-label="Shopping Cart"
+          onClick={() => navigate('/cart')}
+        >
           <ShoppingCart size={24} />
         </button>
       </nav>
@@ -74,7 +81,10 @@ function App() {
           <button className="menu-item">Join us</button>
           <div className="menu-divider"></div>
           <div className="menu-footer">
-            <button className="menu-item icon-button">
+            <button 
+              className="menu-item icon-button"
+              onClick={() => navigate('/cart')}
+            >
               <ShoppingCart size={24} />
             </button>
             <button className="menu-item icon-button">
@@ -138,7 +148,18 @@ function App() {
           className={`girl-image ${isWhatHowOpen ? 'blur' : ''}`} 
         />
       </section>
-    </div>
+    </>
+  );
+
+  return (
+    <Routes>
+      <Route path="/" element={
+        <div className={`app ${isNextSectionVisible ? 'next-section-visible' : ''}`}>
+          <HomePage />
+        </div>
+      } />
+      <Route path="/cart" element={<CartPage />} />
+    </Routes>
   );
 }
 

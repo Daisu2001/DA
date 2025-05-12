@@ -450,3 +450,35 @@ body {
   filter: blur(5px);
   transition: filter 0.3s ease;
 }
+
+/* Cart Page Styles */
+.cart-page {
+  min-height: 100vh;
+  background-color: rgb(237, 237, 237);
+  padding: 20px;
+}
+
+.cart-content {
+  max-width: 1200px;
+  margin: 60px auto 0;
+  padding: 0 20px;
+}
+
+.cart-content h1 {
+  font-family: 'Space Mono', monospace;
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  color: black;
+}
+
+.cart-content p {
+  font-family: 'Space Mono', monospace;
+  color: #666;
+  text-align: center;
+  margin-top: 4rem;
+}
+
+/* Ensure black color for icons on cart page */
+.cart-page .nav-buttons .icon-button {
+  color: black;
+}
