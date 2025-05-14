@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import './App.css';
-import { Menu, ShoppingCart, Phone, ChevronDown, X, Heart } from 'lucide-react';
+import { Menu, ShoppingCart, Phone, ChevronDown, X, Heart, Instagram, Facebook, Twitter, Mail } from 'lucide-react';
 import CartPage from './CartPage';
 
 // Add interface for brand data
