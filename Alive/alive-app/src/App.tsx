@@ -45,6 +45,9 @@ function App() {
   const [isOverBlackSection, setIsOverBlackSection] = useState(false);
   const [hoveredBrand, setHoveredBrand] = useState<string | null>(null);
   const [scrollY, setScrollY] = useState(0);
+  const [lastScrollY, setLastScrollY] = useState(0);
+  const [showBackToTop, setShowBackToTop] = useState(false);
+  const [activeFilter, setActiveFilter] = useState<'name' | 'new' | 'favorites'>('new');
   const [favorites, setFavorites] = useState<string[]>(() => {
     const savedFavorites = localStorage.getItem('brandFavorites');
     return savedFavorites ? JSON.parse(savedFavorites) : [];
@@ -68,24 +71,24 @@ function App() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const scrollPosition = window.scrollY;
-      const windowHeight = window.innerHeight;
-      
-      // Check if we're over the black section
+      const currentScrollY = window.scrollY;
       const blackSection = document.querySelector('.black-section');
+      
       if (blackSection) {
         const blackSectionTop = blackSection.getBoundingClientRect().top;
-        setIsOverBlackSection(blackSectionTop <= windowHeight * 0.5);
+        const isInBlackSection = blackSectionTop <= window.innerHeight && blackSectionTop > -blackSection.clientHeight;
+        const isScrollingUp = currentScrollY < lastScrollY;
+        
+        setShowBackToTop(isInBlackSection && isScrollingUp);
+        setLastScrollY(currentScrollY);
       }
       
-      setIsDarkBackground(scrollPosition < windowHeight * 0.5);
+      setScrollY(currentScrollY);
     };
 
     window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Initial check
-
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [lastScrollY]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -256,13 +259,22 @@ function App() {
       <section id="our-brands" className="brands-section">
         <h1>Our brands</h1>
         <div className="brands-filter-bar">
-          <button className="filter-button">
+          <button 
+            className={`filter-button ${activeFilter === 'name' ? 'active' : ''}`}
+            onClick={() => setActiveFilter('name')}
+          >
             <span>Name</span>
           </button>
-          <button className="filter-button active">
+          <button 
+            className={`filter-button ${activeFilter === 'new' ? 'active' : ''}`}
+            onClick={() => setActiveFilter('new')}
+          >
             <span>New added</span>
           </button>
-          <button className="filter-button">
+          <button 
+            className={`filter-button ${activeFilter === 'favorites' ? 'active' : ''}`}
+            onClick={() => setActiveFilter('favorites')}
+          >
             <span>Favorites</span>
           </button>
           <div className="filter-indicator"></div>
@@ -351,11 +363,10 @@ function App() {
             <button className="contact-button">E-mail</button>
           </div>
           <button 
-            className="back-to-top"
+            className={`back-to-top ${showBackToTop ? 'visible' : ''}`}
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           >
-            <span>Back to top</span>
-            <ChevronDown size={20} style={{ transform: 'rotate(180deg)' }} />
+            <ChevronDown size={24} />
           </button>
         </div>
       </section>
