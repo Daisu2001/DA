@@ -42,6 +42,7 @@ function App() {
   const [isNextSectionVisible, setIsNextSectionVisible] = useState(false);
   const [isWhatHowOpen, setIsWhatHowOpen] = useState(false);
   const [isDarkBackground, setIsDarkBackground] = useState(true);
+  const [isOverBlackSection, setIsOverBlackSection] = useState(false);
   const [hoveredBrand, setHoveredBrand] = useState<string | null>(null);
   const [scrollY, setScrollY] = useState(0);
   const [favorites, setFavorites] = useState<string[]>(() => {
@@ -69,6 +70,14 @@ function App() {
     const handleScroll = () => {
       const scrollPosition = window.scrollY;
       const windowHeight = window.innerHeight;
+      
+      // Check if we're over the black section
+      const blackSection = document.querySelector('.black-section');
+      if (blackSection) {
+        const blackSectionTop = blackSection.getBoundingClientRect().top;
+        setIsOverBlackSection(blackSectionTop <= windowHeight * 0.5);
+      }
+      
       setIsDarkBackground(scrollPosition < windowHeight * 0.5);
     };
 
@@ -126,14 +135,14 @@ function App() {
     <div className="app">
       <nav className={`nav-buttons ${isMenuOpen || isWhatHowOpen ? 'hidden' : ''}`}>
         <button 
-          className={`icon-button menu-button ${isDarkBackground ? 'light-icon' : 'dark-icon'}`}
+          className={`icon-button menu-button ${isDarkBackground || isOverBlackSection ? 'light-icon' : 'dark-icon'}`}
           aria-label="Menu"
           onClick={() => setIsMenuOpen(true)}
         >
           <Menu size={24} />
         </button>
         <button 
-          className={`icon-button cart-button ${isDarkBackground ? 'light-icon' : 'dark-icon'}`}
+          className={`icon-button cart-button ${isDarkBackground || isOverBlackSection ? 'light-icon' : 'dark-icon'}`}
           aria-label="Shopping Cart"
           onClick={() => navigate('/cart')}
         >
@@ -158,9 +167,19 @@ function App() {
             Our brands
           </button>
           <div className="menu-divider"></div>
-          <button className="menu-item">About us</button>
+          <button 
+            className="menu-item"
+            onClick={() => handleScrollClick('about-us')}
+          >
+            About us
+          </button>
           <div className="menu-divider"></div>
-          <button className="menu-item">Join us</button>
+          <button 
+            className="menu-item"
+            onClick={() => handleScrollClick('contact-us')}
+          >
+            Join us
+          </button>
           <div className="menu-divider"></div>
           <div className="menu-footer">
             <button 
@@ -169,7 +188,10 @@ function App() {
             >
               <ShoppingCart size={24} />
             </button>
-            <button className="menu-item icon-button">
+            <button 
+              className="menu-item icon-button"
+              onClick={() => handleScrollClick('contact-us')}
+            >
               <Phone size={24} />
             </button>
           </div>
@@ -295,6 +317,35 @@ function App() {
           ))}
         </div>
       </section>
+
+      {/* About Us Section */}
+      <section id="about-us" className="middle-section">
+        <div className="middle-section-content">
+          <div className="about-content">
+            <div className="about-section">
+              <h3>About us</h3>
+              <p>Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsumLorem ipsumLorem ipsumLorem ipsum Lorem ipsumLorem ipsumLorem ipsumLorem ipsum</p>
+            </div>
+            <div className="about-section">
+              <h3>Mission</h3>
+              <p>Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsumLorem ipsumLorem ipsumLorem ipsum Lorem ipsumLorem ipsumLorem ipsumLorem ipsum</p>
+            </div>
+            <div className="about-section">
+              <h3>Vision</h3>
+              <p>Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsumLorem ipsumLorem ipsumLorem ipsum Lorem ipsumLorem ipsumLorem ipsumLorem ipsum</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section id="contact-us" className="black-section">
+        <div className="black-section-content">
+          <h2>Contact Us</h2>
+          {/* Add your content here */}
+        </div>
+      </section>
+
     </div>
   );
 
