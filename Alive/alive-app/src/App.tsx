@@ -341,8 +341,22 @@ function App() {
       {/* Contact Section */}
       <section id="contact-us" className="black-section">
         <div className="black-section-content">
-          <h2>Contact Us</h2>
-          {/* Add your content here */}
+          <h2>Let your style come</h2>
+          <div className="alive-text-container">
+            <img src="/AliveText.png" alt="ALIVE" className="alive-text-contact" />
+          </div>
+          <h3>Apply to join us!</h3>
+          <div className="contact-buttons">
+            <button className="contact-button">Call us</button>
+            <button className="contact-button">E-mail</button>
+          </div>
+          <button 
+            className="back-to-top"
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          >
+            <span>Back to top</span>
+            <ChevronDown size={20} style={{ transform: 'rotate(180deg)' }} />
+          </button>
         </div>
       </section>
 

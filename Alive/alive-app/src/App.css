@@ -1024,7 +1024,7 @@ body {
   visibility: visible;
 }
 
-/* Black Section after Brands */
+/* Black Section Styles */
 .black-section {
   min-height: 100vh;
   width: 100%;
@@ -1032,24 +1032,119 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 120px 20px;
-  color: white;
+  padding: 60px 20px;
   position: relative;
-}
-
-.black-section h2 {
-  font-family: 'Space Mono', monospace;
-  font-size: 32px;
-  margin-bottom: 40px;
-  font-weight: normal;
-  letter-spacing: -0.5px;
-  text-align: center;
+  color: white;
 }
 
 .black-section-content {
   max-width: 1200px;
   width: 100%;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 120px);
+  position: relative;
+}
+
+.black-section h2 {
+  font-family: 'Space Mono', monospace;
+  font-size: 32px;
+  margin-bottom: 30px;
+  font-weight: normal;
+  letter-spacing: -0.5px;
+  text-align: center;
+}
+
+.black-section h3 {
+  font-family: 'Space Mono', monospace;
+  font-size: 24px;
+  margin: 30px 0;
+  font-weight: normal;
+  letter-spacing: -0.5px;
+  text-align: center;
+}
+
+.alive-text-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 20px auto;
+  text-align: center;
+}
+
+.alive-text-contact {
+  width: 100%;
+  height: auto;
+  max-width: 400px;
+  filter: brightness(0.8) contrast(1.2);
+}
+
+.contact-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin: 30px 0;
+}
+
+.contact-button {
+  background-color: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 25px;
+  padding: 12px 40px;
+  color: white;
+  font-family: 'Space Mono', monospace;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 200px;
+  text-align: center;
+}
+
+.contact-button:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.back-to-top {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: transparent;
+  border: none;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  font-family: 'Space Mono', monospace;
+  font-size: 14px;
+  padding: 10px;
+  z-index: 1000;
+}
+
+.back-to-top:hover {
+  opacity: 0.8;
+}
+
+.back-to-top svg {
+  animation: bounce-up 2s infinite;
+}
+
+@keyframes bounce-up {
+  0%, 20%, 50%, 80%, 100% {
+    transform: rotate(180deg) translateY(0);
+  }
+  40% {
+    transform: rotate(180deg) translateY(10px);
+  }
+  60% {
+    transform: rotate(180deg) translateY(5px);
+  }
 }
 
 /* Middle Section (between brands and black section) */
