@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Menu, ShoppingCart, ChevronLeft, Phone, Heart, Plus, Star, X } from 'lucide-react';
 import './App.css';
@@ -255,6 +255,7 @@ const BrandPage: React.FC = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [showCartConfirmation, setShowCartConfirmation] = useState(false);
   const [selectedColor, setSelectedColor] = useState<Color | null>(null);
+  const [cartCount, setCartCount] = useState(0);
 
   // Select products based on brandId
   const products = brandId?.toLowerCase() === 'chanel' 
@@ -331,12 +332,38 @@ const BrandPage: React.FC = () => {
     // Save updated cart back to localStorage
     localStorage.setItem('cartItems', JSON.stringify(existingCart));
 
+    // Update cart count immediately
+    const totalItems = existingCart.reduce((sum, item) => sum + (item.quantity || 0), 0);
+    setCartCount(totalItems);
+
+    // Dispatch custom event for cart update
+    window.dispatchEvent(new CustomEvent('cartUpdated'));
+
     setShowCartConfirmation(true);
     setTimeout(() => {
       setShowCartConfirmation(false);
       setSelectedProduct(null);
     }, 1500);
   };
+
+  // Update cart count whenever it changes
+  useEffect(() => {
+    const updateCartCount = () => {
+      const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
+      const totalItems = cartItems.reduce((sum: number, item: CartItem) => sum + (item.quantity || 0), 0);
+      setCartCount(totalItems);
+    };
+
+    updateCartCount();
+    // Listen for storage changes and custom cart updates
+    window.addEventListener('storage', updateCartCount);
+    window.addEventListener('cartUpdated', updateCartCount);
+    
+    return () => {
+      window.removeEventListener('storage', updateCartCount);
+      window.removeEventListener('cartUpdated', updateCartCount);
+    };
+  }, []);
 
   // Add color selection handler
   const handleColorSelect = (color: Color) => {
@@ -354,8 +381,9 @@ const BrandPage: React.FC = () => {
           <div className="brand-logo">
             {brandId?.toUpperCase()}
           </div>
-          <button className="icon-button" onClick={() => navigate('/cart')}>
+          <button className="icon-button cart-button" onClick={() => navigate('/cart')}>
             <ShoppingCart size={24} />
+            {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
           </button>
         </nav>
 
@@ -483,10 +511,11 @@ const BrandPage: React.FC = () => {
           <div className="menu-divider"></div>
           <div className="menu-footer">
             <button 
-              className="menu-item icon-button"
+              className="menu-item icon-button cart-button"
               onClick={() => navigate('/cart')}
             >
               <ShoppingCart size={24} />
+              {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
             </button>
             <button 
               className="menu-item icon-button"

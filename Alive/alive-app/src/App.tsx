@@ -52,12 +52,32 @@ function App() {
     const savedFavorites = localStorage.getItem('brandFavorites');
     return savedFavorites ? JSON.parse(savedFavorites) : [];
   });
+  const [cartCount, setCartCount] = useState(0);
   const navigate = useNavigate();
 
   // Save favorites to localStorage whenever they change
   useEffect(() => {
     localStorage.setItem('brandFavorites', JSON.stringify(favorites));
   }, [favorites]);
+
+  // Update cart count whenever it changes
+  useEffect(() => {
+    const updateCartCount = () => {
+      const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
+      const totalItems = cartItems.reduce((sum: number, item: any) => sum + (item.quantity || 0), 0);
+      setCartCount(totalItems);
+    };
+
+    updateCartCount();
+    // Listen for storage changes and custom cart updates
+    window.addEventListener('storage', updateCartCount);
+    window.addEventListener('cartUpdated', updateCartCount);
+    
+    return () => {
+      window.removeEventListener('storage', updateCartCount);
+      window.removeEventListener('cartUpdated', updateCartCount);
+    };
+  }, []);
 
   const toggleFavorite = (brandId: string) => {
     setFavorites(prev => {
@@ -168,6 +188,7 @@ function App() {
             onClick={() => navigate('/cart')}
           >
             <ShoppingCart size={24} />
+            {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
           </button>
         </nav>
 
@@ -204,10 +225,11 @@ function App() {
             <div className="menu-divider"></div>
             <div className="menu-footer">
               <button 
-                className="menu-item icon-button"
+                className="menu-item icon-button cart-button"
                 onClick={() => navigate('/cart')}
               >
                 <ShoppingCart size={24} />
+                {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
               </button>
               <button 
                 className="menu-item icon-button"

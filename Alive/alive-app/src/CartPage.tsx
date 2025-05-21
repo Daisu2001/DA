@@ -19,25 +19,17 @@ interface CartItem {
   selectedColor?: Color;
 }
 
+interface DeleteItem {
+  id: string;
+  brandId: string;
+}
+
 function CartPage() {
   const navigate = useNavigate();
   const [likedItems, setLikedItems] = useState<string[]>([]);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [itemsToAnimate, setItemsToAnimate] = useState<string[]>([]);
-  const [itemToDelete, setItemToDelete] = useState<string | null>(null);
-
-  // Load cart items from localStorage
-  useEffect(() => {
-    const savedCart = localStorage.getItem('cartItems');
-    if (savedCart) {
-      setCartItems(JSON.parse(savedCart));
-    }
-    
-    const savedLikedItems = localStorage.getItem('likedCartItems');
-    if (savedLikedItems) {
-      setLikedItems(JSON.parse(savedLikedItems));
-    }
-  }, []);
+  const [itemToDelete, setItemToDelete] = useState<DeleteItem | null>(null);
 
   const toggleLike = (itemId: string) => {
     setLikedItems(prev => {
@@ -51,43 +43,60 @@ function CartPage() {
     });
   };
 
-  const updateQuantity = (itemId: string, increment: boolean) => {
-    setCartItems(prev => {
-      const updated = prev.map(item => {
-        if (item.id === itemId) {
-          const newQuantity = Math.max(0, item.quantity + (increment ? 1 : -1));
-          return { ...item, quantity: newQuantity };
-        }
-        return item;
-      });
-      
-      // Remove items with quantity 0
-      const filtered = updated.filter(item => item.quantity > 0);
-      localStorage.setItem('cartItems', JSON.stringify(filtered));
-      return filtered;
-    });
-  };
-
-  const confirmDelete = (itemId: string) => {
-    setItemToDelete(itemId);
-  };
-
-  const cancelDelete = () => {
-    setItemToDelete(null);
-  };
-
-  const removeItem = (itemId: string) => {
-    setItemsToAnimate(prev => [...prev, itemId]);
-    setItemToDelete(null);
+  const handleDeleteItem = (itemId: string, brandId: string) => {
+    // Get current cart items
+    const currentCart = JSON.parse(localStorage.getItem('cartItems') || '[]');
     
-    setTimeout(() => {
-      setCartItems(prev => {
-        const updated = prev.filter(item => item.id !== itemId);
-        localStorage.setItem('cartItems', JSON.stringify(updated));
-        return updated;
-      });
-    }, 300);
+    // Find the item to remove
+    const updatedCart = currentCart.filter(
+      (item: CartItem) => !(item.id === itemId && item.brandId === brandId)
+    );
+    
+    // Save the updated cart
+    localStorage.setItem('cartItems', JSON.stringify(updatedCart));
+    
+    // Update local state
+    setCartItems(updatedCart);
+    
+    // Dispatch cart update event
+    window.dispatchEvent(new CustomEvent('cartUpdated'));
+    
+    // Close delete confirmation if open
+    setItemToDelete(null);
   };
+
+  const handleQuantityChange = (itemId: string, brandId: string, change: number) => {
+    const updatedCart = cartItems.map(item => {
+      if (item.id === itemId && item.brandId === brandId) {
+        const newQuantity = Math.max(1, item.quantity + change);
+        return { ...item, quantity: newQuantity };
+      }
+      return item;
+    });
+
+    setCartItems(updatedCart);
+    localStorage.setItem('cartItems', JSON.stringify(updatedCart));
+    
+    // Dispatch cart update event
+    window.dispatchEvent(new CustomEvent('cartUpdated'));
+  };
+
+  const confirmDelete = (id: string, brandId: string) => {
+    setItemToDelete({ id, brandId });
+  };
+
+  // Load cart items from localStorage
+  useEffect(() => {
+    const savedCart = localStorage.getItem('cartItems');
+    if (savedCart) {
+      setCartItems(JSON.parse(savedCart));
+    }
+    
+    const savedLikedItems = localStorage.getItem('likedCartItems');
+    if (savedLikedItems) {
+      setLikedItems(JSON.parse(savedLikedItems));
+    }
+  }, []);
 
   const calculateTotal = () => {
     return cartItems.reduce((total, item) => {
@@ -125,7 +134,7 @@ function CartPage() {
           <div className="cart-items">
             {cartItems.map((item) => (
               <div 
-                key={item.id} 
+                key={`${item.brandId}-${item.id}`}
                 className={`cart-item ${itemsToAnimate.includes(item.id) ? 'fade-out' : ''}`}
               >
                 <div className="item-image">
@@ -149,7 +158,7 @@ function CartPage() {
                     <div className="quantity-buttons">
                       <button 
                         aria-label="Decrease quantity"
-                        onClick={() => updateQuantity(item.id, false)}
+                        onClick={() => handleQuantityChange(item.id, item.brandId, -1)}
                         className={item.quantity <= 1 ? 'disabled' : ''}
                         disabled={item.quantity <= 1}
                       >
@@ -157,7 +166,7 @@ function CartPage() {
                       </button>
                       <button 
                         aria-label="Increase quantity"
-                        onClick={() => updateQuantity(item.id, true)}
+                        onClick={() => handleQuantityChange(item.id, item.brandId, 1)}
                       >
                         +
                       </button>
@@ -175,10 +184,10 @@ function CartPage() {
                     </button>
                     <button 
                       aria-label="Remove item"
-                      onClick={() => confirmDelete(item.id)}
+                      onClick={() => confirmDelete(item.id, item.brandId)}
                       className="remove-button"
                     >
-                      <Trash2 size={16} />
+                      <Trash2 size={20} />
                     </button>
                   </div>
                   <div className="item-price">${(item.price * item.quantity).toFixed(2)}</div>
@@ -208,15 +217,15 @@ function CartPage() {
 
       {itemToDelete && (
         <>
-          <div className="backdrop" onClick={cancelDelete}></div>
+          <div className="backdrop" onClick={() => setItemToDelete(null)}></div>
           <div className="delete-confirmation-popup">
-            <button className="close-button" onClick={cancelDelete}>
+            <button className="close-button" onClick={() => setItemToDelete(null)}>
               <X size={24} />
             </button>
             <h2>Remove Item?</h2>
             <div className="confirmation-buttons">
-              <button onClick={cancelDelete}>Cancel</button>
-              <button onClick={() => removeItem(itemToDelete)}>Remove</button>
+              <button onClick={() => setItemToDelete(null)}>Cancel</button>
+              <button onClick={() => handleDeleteItem(itemToDelete.id, itemToDelete.brandId)}>Remove</button>
             </div>
           </div>
         </>
