@@ -20,6 +20,16 @@ interface Color {
   image: string;
 }
 
+interface CartItem {
+  id: string;
+  brandId: string;
+  name: string;
+  image: string;
+  price: number;
+  quantity: number;
+  selectedColor?: Color;
+}
+
 const pradaProducts: Product[] = [
   { 
     id: '1', 
@@ -244,6 +254,7 @@ const BrandPage: React.FC = () => {
   const [favorites, setFavorites] = useState<string[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [showCartConfirmation, setShowCartConfirmation] = useState(false);
+  const [selectedColor, setSelectedColor] = useState<Color | null>(null);
 
   // Select products based on brandId
   const products = brandId?.toLowerCase() === 'chanel' 
@@ -290,11 +301,46 @@ const BrandPage: React.FC = () => {
   };
 
   const handleAddToCart = () => {
+    if (!selectedProduct || !brandId) return;
+
+    // Get existing cart items or initialize empty array
+    const existingCart: CartItem[] = JSON.parse(localStorage.getItem('cartItems') || '[]');
+
+    // Check if item already exists in cart
+    const existingItemIndex = existingCart.findIndex(
+      item => item.id === selectedProduct.id && item.brandId === brandId
+    );
+
+    if (existingItemIndex !== -1) {
+      // Update quantity if item exists
+      existingCart[existingItemIndex].quantity += 1;
+    } else {
+      // Add new item if it doesn't exist
+      const newItem: CartItem = {
+        id: selectedProduct.id,
+        brandId: brandId,
+        name: selectedProduct.name,
+        image: selectedProduct.image,
+        price: selectedProduct.price,
+        quantity: 1,
+        selectedColor: selectedColor || selectedProduct.colors[0]
+      };
+      existingCart.push(newItem);
+    }
+
+    // Save updated cart back to localStorage
+    localStorage.setItem('cartItems', JSON.stringify(existingCart));
+
     setShowCartConfirmation(true);
     setTimeout(() => {
       setShowCartConfirmation(false);
       setSelectedProduct(null);
     }, 1500);
+  };
+
+  // Add color selection handler
+  const handleColorSelect = (color: Color) => {
+    setSelectedColor(color);
   };
 
   return (
@@ -388,9 +434,10 @@ const BrandPage: React.FC = () => {
                 {selectedProduct.colors.map((color) => (
                   <button
                     key={color.code}
-                    className="color-button"
+                    className={`color-button ${selectedColor?.code === color.code ? 'selected' : ''}`}
                     style={{ backgroundColor: color.code }}
                     aria-label={`${color.name} color`}
+                    onClick={() => handleColorSelect(color)}
                   />
                 ))}
               </div>
