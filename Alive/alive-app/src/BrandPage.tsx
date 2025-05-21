@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Menu, ShoppingCart, ChevronLeft, Phone, Heart, Plus, Star } from 'lucide-react';
+import { Menu, ShoppingCart, ChevronLeft, Phone, Heart, Plus, Star, X } from 'lucide-react';
 import './App.css';
 
 interface Product {
@@ -11,15 +11,88 @@ interface Product {
   rating: number;
   isNew?: boolean;
   isFavorite?: boolean;
+  colors: Color[];
+}
+
+interface Color {
+  name: string;
+  code: string;
+  image: string;
 }
 
 const dummyProducts: Product[] = [
-  { id: '1', name: 'Limited Edition Watch', image: '/placeholder.png', price: 999.99, rating: 4.8, isNew: true },
-  { id: '2', name: 'Classic Timepiece', image: '/placeholder.png', price: 799.99, rating: 4.5 },
-  { id: '3', name: 'Diamond Collection', image: '/placeholder.png', price: 1299.99, rating: 4.9, isNew: true },
-  { id: '4', name: 'Sport Edition', image: '/placeholder.png', price: 899.99, rating: 4.6 },
-  { id: '5', name: 'Gold Series', image: '/placeholder.png', price: 1499.99, rating: 4.7 },
-  { id: '6', name: 'Silver Collection', image: '/placeholder.png', price: 999.99, rating: 4.4 },
+  { 
+    id: '1', 
+    name: 'Limited Edition Watch', 
+    image: '/placeholder.png', 
+    price: 999.99, 
+    rating: 4.8, 
+    isNew: true,
+    colors: [
+      { name: 'Olive', code: '#808000', image: '/placeholder.png' },
+      { name: 'Dark Brown', code: '#3e2723', image: '/placeholder.png' },
+      { name: 'Navy', code: '#000080', image: '/placeholder.png' },
+      { name: 'Silver', code: '#C0C0C0', image: '/placeholder.png' }
+    ]
+  },
+  { 
+    id: '2', 
+    name: 'Classic Timepiece', 
+    image: '/placeholder.png', 
+    price: 799.99, 
+    rating: 4.5,
+    colors: [
+      { name: 'Gold', code: '#FFD700', image: '/placeholder.png' },
+      { name: 'Silver', code: '#C0C0C0', image: '/placeholder.png' },
+      { name: 'Rose Gold', code: '#B76E79', image: '/placeholder.png' }
+    ]
+  },
+  { 
+    id: '3', 
+    name: 'Diamond Collection', 
+    image: '/placeholder.png', 
+    price: 1299.99, 
+    rating: 4.9, 
+    isNew: true,
+    colors: [
+      { name: 'White Gold', code: '#E8E8E8', image: '/placeholder.png' },
+      { name: 'Yellow Gold', code: '#FFD700', image: '/placeholder.png' }
+    ]
+  },
+  { 
+    id: '4', 
+    name: 'Sport Edition', 
+    image: '/placeholder.png', 
+    price: 899.99, 
+    rating: 4.6,
+    colors: [
+      { name: 'Black', code: '#000000', image: '/placeholder.png' },
+      { name: 'Red', code: '#FF0000', image: '/placeholder.png' },
+      { name: 'Blue', code: '#0000FF', image: '/placeholder.png' }
+    ]
+  },
+  { 
+    id: '5', 
+    name: 'Gold Series', 
+    image: '/placeholder.png', 
+    price: 1499.99, 
+    rating: 4.7,
+    colors: [
+      { name: 'Yellow Gold', code: '#FFD700', image: '/placeholder.png' },
+      { name: 'Rose Gold', code: '#B76E79', image: '/placeholder.png' }
+    ]
+  },
+  { 
+    id: '6', 
+    name: 'Silver Collection', 
+    image: '/placeholder.png', 
+    price: 999.99, 
+    rating: 4.4,
+    colors: [
+      { name: 'Silver', code: '#C0C0C0', image: '/placeholder.png' },
+      { name: 'Platinum', code: '#E5E4E2', image: '/placeholder.png' }
+    ]
+  }
 ];
 
 const BrandPage: React.FC = () => {
@@ -27,6 +100,8 @@ const BrandPage: React.FC = () => {
   const { brandId } = useParams();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [favorites, setFavorites] = useState<string[]>([]);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [showCartConfirmation, setShowCartConfirmation] = useState(false);
 
   const handleBackToBrands = () => {
     navigate('/');
@@ -57,6 +132,22 @@ const BrandPage: React.FC = () => {
     );
   };
 
+  const handleProductClick = (product: Product) => {
+    setSelectedProduct(product);
+  };
+
+  const closePreview = () => {
+    setSelectedProduct(null);
+  };
+
+  const handleAddToCart = () => {
+    setShowCartConfirmation(true);
+    setTimeout(() => {
+      setShowCartConfirmation(false);
+      setSelectedProduct(null);
+    }, 1500);
+  };
+
   return (
     <div className="brand-page">
       <div className="page-container">
@@ -84,7 +175,11 @@ const BrandPage: React.FC = () => {
         {/* Products Grid */}
         <div className={`products-grid ${isMenuOpen ? 'blur' : ''}`}>
           {dummyProducts.map((product) => (
-            <div key={product.id} className="product-card">
+            <div 
+              key={product.id} 
+              className="product-card"
+              onClick={() => handleProductClick(product)}
+            >
               <div className="product-image-placeholder">
                 {product.isNew && (
                   <div className="new-badge">
@@ -93,7 +188,10 @@ const BrandPage: React.FC = () => {
                 )}
                 <button 
                   className={`favorite-button ${favorites.includes(product.id) ? 'active' : ''}`}
-                  onClick={() => toggleFavorite(product.id)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleFavorite(product.id);
+                  }}
                 >
                   <Heart size={20} />
                 </button>
@@ -107,15 +205,69 @@ const BrandPage: React.FC = () => {
                 <div className="product-price">
                   ${product.price.toLocaleString()}
                 </div>
-                <button className="add-to-cart">
-                  <Plus size={16} />
-                  Add to Cart
-                </button>
+                <div className="color-options">
+                  {product.colors.map((color) => (
+                    <button
+                      key={color.code}
+                      className="color-button"
+                      style={{ backgroundColor: color.code }}
+                      aria-label={`${color.name} color`}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
           ))}
         </div>
       </div>
+
+      {/* Cart Confirmation Popup */}
+      {showCartConfirmation && (
+        <div className="cart-confirmation">
+          <div className="cart-confirmation-content">
+            <ShoppingCart size={24} />
+            <span>Added to cart!</span>
+          </div>
+        </div>
+      )}
+
+      {/* Product Preview Modal */}
+      {selectedProduct && (
+        <div className="preview-modal" onClick={closePreview}>
+          <div className="preview-content" onClick={e => e.stopPropagation()}>
+            <button className="close-preview" onClick={closePreview}>
+              <X size={24} />
+            </button>
+            <div className="preview-image">
+              <img src={selectedProduct.image} alt={selectedProduct.name} />
+            </div>
+            <div className="preview-info">
+              <h3>{selectedProduct.name}</h3>
+              <div className="preview-rating">
+                <Star size={16} />
+                <span>{selectedProduct.rating}</span>
+              </div>
+              <div className="preview-price">
+                ${selectedProduct.price.toLocaleString()}
+              </div>
+              <div className="preview-colors">
+                {selectedProduct.colors.map((color) => (
+                  <button
+                    key={color.code}
+                    className="color-button"
+                    style={{ backgroundColor: color.code }}
+                    aria-label={`${color.name} color`}
+                  />
+                ))}
+              </div>
+              <button className="add-to-cart" onClick={handleAddToCart}>
+                <Plus size={16} />
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Sliding Menu */}
       <div className={`sliding-menu ${isMenuOpen ? 'open' : ''}`}>

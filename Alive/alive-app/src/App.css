@@ -1472,6 +1472,7 @@ body {
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   aspect-ratio: 1;
+  cursor: pointer;
 }
 
 .product-card::before {
@@ -1741,5 +1742,225 @@ body {
 
   .product-info {
     padding: 15px;
+  }
+}
+
+/* Color Options */
+.color-options {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+.color-button {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 10;
+}
+
+.color-button:hover {
+  transform: scale(1.1);
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+.color-button:active {
+  transform: scale(0.95);
+}
+
+/* Preview Modal */
+.preview-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3000;
+  padding: 20px;
+  animation: fadeIn 0.3s ease;
+}
+
+.preview-content {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 500px;
+  position: relative;
+  overflow: hidden;
+  animation: slideUp 0.3s ease;
+}
+
+.preview-image {
+  width: 100%;
+  height: 300px;
+  background: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.05),
+    rgba(255, 255, 255, 0.02)
+  );
+  position: relative;
+  overflow: hidden;
+}
+
+.preview-info {
+  padding: 30px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.preview-info h3 {
+  font-family: 'Space Mono', monospace;
+  font-size: 24px;
+  margin: 0;
+  font-weight: normal;
+}
+
+.preview-rating {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.preview-rating svg {
+  color: #FFD700;
+}
+
+.preview-price {
+  font-family: 'Space Mono', monospace;
+  font-size: 28px;
+}
+
+.preview-colors {
+  display: flex;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.preview-content .add-to-cart {
+  margin-top: auto;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 15px;
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.preview-content .add-to-cart:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.close-preview {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: rgba(0, 0, 0, 0.3);
+  border: none;
+  color: white;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 1;
+}
+
+.close-preview:hover {
+  background: rgba(0, 0, 0, 0.5);
+  transform: scale(1.1);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Cart Confirmation Popup */
+.cart-confirmation {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 4000;
+  animation: popIn 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.cart-confirmation-content {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 20px 40px;
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.cart-confirmation-content svg {
+  color: #000;
+}
+
+.cart-confirmation-content span {
+  color: #000;
+  font-family: 'Space Mono', monospace;
+  font-size: 16px;
+}
+
+@keyframes popIn {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
   }
 }
