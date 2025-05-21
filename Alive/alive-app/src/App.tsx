@@ -48,7 +48,6 @@ function App() {
   const [scrollY, setScrollY] = useState(0);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [showBackToTop, setShowBackToTop] = useState(false);
-  const [activeFilter, setActiveFilter] = useState<'name' | 'new' | 'favorites'>('new');
   const [favorites, setFavorites] = useState<string[]>(() => {
     const savedFavorites = localStorage.getItem('brandFavorites');
     return savedFavorites ? JSON.parse(savedFavorites) : [];
@@ -277,27 +276,6 @@ function App() {
 
         <section id="our-brands" className="brands-section">
           <h1>Our brands</h1>
-          <div className="brands-filter-bar">
-            <button 
-              className={`filter-button ${activeFilter === 'name' ? 'active' : ''}`}
-              onClick={() => setActiveFilter('name')}
-            >
-              <span>Name</span>
-            </button>
-            <button 
-              className={`filter-button ${activeFilter === 'new' ? 'active' : ''}`}
-              onClick={() => setActiveFilter('new')}
-            >
-              <span>New added</span>
-            </button>
-            <button 
-              className={`filter-button ${activeFilter === 'favorites' ? 'active' : ''}`}
-              onClick={() => setActiveFilter('favorites')}
-            >
-              <span>Favorites</span>
-            </button>
-            <div className="filter-indicator"></div>
-          </div>
           <div className="brands-list">
             {brands.map((brand, index) => (
               <div 

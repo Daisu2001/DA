@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Menu, ShoppingCart, ChevronLeft, Filter, Phone } from 'lucide-react';
+import { Menu, ShoppingCart, ChevronLeft, Phone, Heart, Plus, Star } from 'lucide-react';
 import './App.css';
 
 interface Product {
@@ -8,21 +8,25 @@ interface Product {
   name: string;
   image: string;
   price: number;
+  rating: number;
+  isNew?: boolean;
+  isFavorite?: boolean;
 }
 
 const dummyProducts: Product[] = [
-  { id: '1', name: 'Product 1', image: '/placeholder.png', price: 999.99 },
-  { id: '2', name: 'Product 2', image: '/placeholder.png', price: 799.99 },
-  { id: '3', name: 'Product 3', image: '/placeholder.png', price: 1299.99 },
-  { id: '4', name: 'Product 4', image: '/placeholder.png', price: 899.99 },
-  { id: '5', name: 'Product 5', image: '/placeholder.png', price: 1499.99 },
-  { id: '6', name: 'Product 6', image: '/placeholder.png', price: 999.99 },
+  { id: '1', name: 'Limited Edition Watch', image: '/placeholder.png', price: 999.99, rating: 4.8, isNew: true },
+  { id: '2', name: 'Classic Timepiece', image: '/placeholder.png', price: 799.99, rating: 4.5 },
+  { id: '3', name: 'Diamond Collection', image: '/placeholder.png', price: 1299.99, rating: 4.9, isNew: true },
+  { id: '4', name: 'Sport Edition', image: '/placeholder.png', price: 899.99, rating: 4.6 },
+  { id: '5', name: 'Gold Series', image: '/placeholder.png', price: 1499.99, rating: 4.7 },
+  { id: '6', name: 'Silver Collection', image: '/placeholder.png', price: 999.99, rating: 4.4 },
 ];
 
 const BrandPage: React.FC = () => {
   const navigate = useNavigate();
   const { brandId } = useParams();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [favorites, setFavorites] = useState<string[]>([]);
 
   const handleBackToBrands = () => {
     navigate('/');
@@ -45,20 +49,73 @@ const BrandPage: React.FC = () => {
     }, 100);
   };
 
+  const toggleFavorite = (productId: string) => {
+    setFavorites(prev => 
+      prev.includes(productId) 
+        ? prev.filter(id => id !== productId)
+        : [...prev, productId]
+    );
+  };
+
   return (
     <div className="brand-page">
-      {/* Navigation Bar */}
-      <nav className="brand-nav">
-        <button className="icon-button" onClick={() => setIsMenuOpen(true)}>
-          <Menu size={24} />
-        </button>
-        <div className="brand-logo">
-          {brandId?.toUpperCase()}
+      <div className="page-container">
+        {/* Navigation Bar */}
+        <nav className="brand-nav">
+          <button className="icon-button" onClick={() => setIsMenuOpen(true)}>
+            <Menu size={24} />
+          </button>
+          <div className="brand-logo">
+            {brandId?.toUpperCase()}
+          </div>
+          <button className="icon-button" onClick={() => navigate('/cart')}>
+            <ShoppingCart size={24} />
+          </button>
+        </nav>
+
+        {/* Back to Brands Button */}
+        <div className="navigation-section">
+          <button className="back-to-brands" onClick={handleBackToBrands}>
+            <ChevronLeft size={16} />
+            Back to brands
+          </button>
         </div>
-        <button className="icon-button" onClick={() => navigate('/cart')}>
-          <ShoppingCart size={24} />
-        </button>
-      </nav>
+
+        {/* Products Grid */}
+        <div className={`products-grid ${isMenuOpen ? 'blur' : ''}`}>
+          {dummyProducts.map((product) => (
+            <div key={product.id} className="product-card">
+              <div className="product-image-placeholder">
+                {product.isNew && (
+                  <div className="new-badge">
+                    New
+                  </div>
+                )}
+                <button 
+                  className={`favorite-button ${favorites.includes(product.id) ? 'active' : ''}`}
+                  onClick={() => toggleFavorite(product.id)}
+                >
+                  <Heart size={20} />
+                </button>
+              </div>
+              <div className="product-info">
+                <h3>{product.name}</h3>
+                <div className="product-rating">
+                  <Star size={16} />
+                  <span>{product.rating}</span>
+                </div>
+                <div className="product-price">
+                  ${product.price.toLocaleString()}
+                </div>
+                <button className="add-to-cart">
+                  <Plus size={16} />
+                  Add to Cart
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
 
       {/* Sliding Menu */}
       <div className={`sliding-menu ${isMenuOpen ? 'open' : ''}`}>
@@ -115,32 +172,6 @@ const BrandPage: React.FC = () => {
           onClick={() => setIsMenuOpen(false)}
         ></div>
       )}
-
-      {/* Back to Brands Button */}
-      <button className="back-to-brands" onClick={handleBackToBrands}>
-        <ChevronLeft size={16} />
-        Back to brands
-      </button>
-
-      {/* Filter Bar */}
-      <div className="filter-bar">
-        <div className="filter-content">
-          <div className="filter-left">
-            <Filter size={16} />
-          </div>
-          <button className="type-button">Type</button>
-          <div className="rec-added">Rec. added</div>
-        </div>
-      </div>
-
-      {/* Products Grid */}
-      <div className={`products-grid ${isMenuOpen ? 'blur' : ''}`}>
-        {dummyProducts.map((product) => (
-          <div key={product.id} className="product-card">
-            <div className="product-image-placeholder"></div>
-          </div>
-        ))}
-      </div>
     </div>
   );
 };
