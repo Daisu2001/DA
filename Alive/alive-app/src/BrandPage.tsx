@@ -23,74 +23,74 @@ interface Color {
 const dummyProducts: Product[] = [
   { 
     id: '1', 
-    name: 'Limited Edition Watch', 
-    image: '/placeholder.png', 
-    price: 999.99, 
+    name: 'Re-Nylon Gabardine Jacket', 
+    image: '/Prada.jpg', 
+    price: 2950.00, 
     rating: 4.8, 
     isNew: true,
     colors: [
-      { name: 'Olive', code: '#808000', image: '/placeholder.png' },
-      { name: 'Dark Brown', code: '#3e2723', image: '/placeholder.png' },
-      { name: 'Navy', code: '#000080', image: '/placeholder.png' },
-      { name: 'Silver', code: '#C0C0C0', image: '/placeholder.png' }
+      { name: 'Olive', code: '#808000', image: '/Prada.jpg' },
+      { name: 'Dark Brown', code: '#3e2723', image: '/Prada (2).jpg' },
+      { name: 'Navy', code: '#000080', image: '/Prada (3).jpg' },
+      { name: 'Black', code: '#000000', image: '/Prada (4).jpg' }
     ]
   },
   { 
     id: '2', 
-    name: 'Classic Timepiece', 
-    image: '/placeholder.png', 
-    price: 799.99, 
+    name: 'Technical Cotton Jacket', 
+    image: '/Prada (2).jpg', 
+    price: 2750.00, 
     rating: 4.5,
     colors: [
-      { name: 'Gold', code: '#FFD700', image: '/placeholder.png' },
-      { name: 'Silver', code: '#C0C0C0', image: '/placeholder.png' },
-      { name: 'Rose Gold', code: '#B76E79', image: '/placeholder.png' }
+      { name: 'Brown', code: '#8B4513', image: '/Prada (2).jpg' },
+      { name: 'Black', code: '#000000', image: '/Prada (3).jpg' },
+      { name: 'Navy', code: '#000080', image: '/Prada (4).jpg' }
     ]
   },
   { 
     id: '3', 
-    name: 'Diamond Collection', 
-    image: '/placeholder.png', 
-    price: 1299.99, 
+    name: 'Cotton Piqué Shirt', 
+    image: '/Prada (3).jpg', 
+    price: 1150.00, 
     rating: 4.9, 
     isNew: true,
     colors: [
-      { name: 'White Gold', code: '#E8E8E8', image: '/placeholder.png' },
-      { name: 'Yellow Gold', code: '#FFD700', image: '/placeholder.png' }
+      { name: 'White', code: '#FFFFFF', image: '/Prada (3).jpg' },
+      { name: 'Light Blue', code: '#ADD8E6', image: '/Prada (4).jpg' }
     ]
   },
   { 
     id: '4', 
-    name: 'Sport Edition', 
-    image: '/placeholder.png', 
-    price: 899.99, 
+    name: 'Re-Nylon Gabardine Pants', 
+    image: '/Prada (4).jpg', 
+    price: 1850.00, 
     rating: 4.6,
     colors: [
-      { name: 'Black', code: '#000000', image: '/placeholder.png' },
-      { name: 'Red', code: '#FF0000', image: '/placeholder.png' },
-      { name: 'Blue', code: '#0000FF', image: '/placeholder.png' }
+      { name: 'Black', code: '#000000', image: '/Prada (4).jpg' },
+      { name: 'Navy', code: '#000080', image: '/Prada (5).jpg' },
+      { name: 'Beige', code: '#F5F5DC', image: '/Prada (6).jpg' }
     ]
   },
   { 
     id: '5', 
-    name: 'Gold Series', 
-    image: '/placeholder.png', 
-    price: 1499.99, 
+    name: 'Leather Bomber Jacket', 
+    image: '/Prada (5).jpg', 
+    price: 4950.00, 
     rating: 4.7,
     colors: [
-      { name: 'Yellow Gold', code: '#FFD700', image: '/placeholder.png' },
-      { name: 'Rose Gold', code: '#B76E79', image: '/placeholder.png' }
+      { name: 'Black', code: '#000000', image: '/Prada (5).jpg' },
+      { name: 'Brown', code: '#8B4513', image: '/Prada (6).jpg' }
     ]
   },
   { 
     id: '6', 
-    name: 'Silver Collection', 
-    image: '/placeholder.png', 
-    price: 999.99, 
+    name: 'Padded Nylon Jacket', 
+    image: '/Prada (6).jpg', 
+    price: 2850.00, 
     rating: 4.4,
     colors: [
-      { name: 'Silver', code: '#C0C0C0', image: '/placeholder.png' },
-      { name: 'Platinum', code: '#E5E4E2', image: '/placeholder.png' }
+      { name: 'Black', code: '#000000', image: '/Prada (6).jpg' },
+      { name: 'Navy', code: '#000080', image: '/Prada.jpg' }
     ]
   }
 ];
@@ -186,6 +186,11 @@ const BrandPage: React.FC = () => {
                     New
                   </div>
                 )}
+                <img 
+                  src={product.image} 
+                  alt={product.name}
+                  className="product-image"
+                />
                 <button 
                   className={`favorite-button ${favorites.includes(product.id) ? 'active' : ''}`}
                   onClick={(e) => {
@@ -195,26 +200,6 @@ const BrandPage: React.FC = () => {
                 >
                   <Heart size={20} />
                 </button>
-              </div>
-              <div className="product-info">
-                <h3>{product.name}</h3>
-                <div className="product-rating">
-                  <Star size={16} />
-                  <span>{product.rating}</span>
-                </div>
-                <div className="product-price">
-                  ${product.price.toLocaleString()}
-                </div>
-                <div className="color-options">
-                  {product.colors.map((color) => (
-                    <button
-                      key={color.code}
-                      className="color-button"
-                      style={{ backgroundColor: color.code }}
-                      aria-label={`${color.name} color`}
-                    />
-                  ))}
-                </div>
               </div>
             </div>
           ))}
