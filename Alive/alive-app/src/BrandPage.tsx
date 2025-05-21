@@ -20,7 +20,7 @@ interface Color {
   image: string;
 }
 
-const dummyProducts: Product[] = [
+const pradaProducts: Product[] = [
   { 
     id: '1', 
     name: 'Re-Nylon Gabardine Jacket', 
@@ -95,6 +95,148 @@ const dummyProducts: Product[] = [
   }
 ];
 
+const chanelProducts: Product[] = [
+  { 
+    id: '1', 
+    name: 'Diamond Solitaire Ring', 
+    image: '/Chanel1.png', 
+    price: 12500.00, 
+    rating: 4.9, 
+    isNew: true,
+    colors: [
+      { name: 'White Gold', code: '#E8E8E8', image: '/Chanel1.png' },
+      { name: 'Yellow Gold', code: '#FFD700', image: '/Chanel2.png' }
+    ]
+  },
+  { 
+    id: '2', 
+    name: 'Coco Crush Ring', 
+    image: '/Chanel2.png', 
+    price: 8900.00, 
+    rating: 4.8,
+    colors: [
+      { name: 'Yellow Gold', code: '#FFD700', image: '/Chanel2.png' },
+      { name: 'White Gold', code: '#E8E8E8', image: '/Chanel3.png' }
+    ]
+  },
+  { 
+    id: '3', 
+    name: 'Camélia Ring', 
+    image: '/Chanel3.png', 
+    price: 15800.00, 
+    rating: 4.9, 
+    isNew: true,
+    colors: [
+      { name: 'White Gold', code: '#E8E8E8', image: '/Chanel3.png' },
+      { name: 'Rose Gold', code: '#B76E79', image: '/Chanel4.png' }
+    ]
+  },
+  { 
+    id: '4', 
+    name: 'Ultra Ring', 
+    image: '/Chanel4.png', 
+    price: 9800.00, 
+    rating: 4.8,
+    colors: [
+      { name: 'White Gold', code: '#E8E8E8', image: '/Chanel4.png' },
+      { name: 'Yellow Gold', code: '#FFD700', image: '/Chanel5.png' }
+    ]
+  },
+  { 
+    id: '5', 
+    name: 'Baroque Ring', 
+    image: '/Chanel5.png', 
+    price: 11200.00, 
+    rating: 4.7,
+    colors: [
+      { name: 'Yellow Gold', code: '#FFD700', image: '/Chanel5.png' },
+      { name: 'White Gold', code: '#E8E8E8', image: '/Chanel6.png' }
+    ]
+  },
+  { 
+    id: '6', 
+    name: 'Comète Ring', 
+    image: '/Chanel6.png', 
+    price: 13500.00, 
+    rating: 4.9,
+    colors: [
+      { name: 'White Gold', code: '#E8E8E8', image: '/Chanel6.png' },
+      { name: 'Yellow Gold', code: '#FFD700', image: '/Chanel1.png' }
+    ]
+  }
+];
+
+const valentinoProducts: Product[] = [
+  { 
+    id: '1', 
+    name: 'Crystal-Embellished Heels', 
+    image: '/valentino.jpg', 
+    price: 1200.00, 
+    rating: 4.8, 
+    isNew: true,
+    colors: [
+      { name: 'Black', code: '#000000', image: '/valentino.jpg' },
+      { name: 'Red', code: '#FF0000', image: '/valentino (2).jpg' }
+    ]
+  },
+  { 
+    id: '2', 
+    name: 'Tailored Wide-Leg Pants', 
+    image: '/valentino (2).jpg', 
+    price: 1450.00, 
+    rating: 4.7,
+    colors: [
+      { name: 'Black', code: '#000000', image: '/valentino (2).jpg' },
+      { name: 'Navy', code: '#000080', image: '/valentino (3).jpg' }
+    ]
+  },
+  { 
+    id: '3', 
+    name: 'Structured Wool Jacket', 
+    image: '/valentino (3).jpg', 
+    price: 3200.00, 
+    rating: 4.9, 
+    isNew: true,
+    colors: [
+      { name: 'Black', code: '#000000', image: '/valentino (3).jpg' },
+      { name: 'Beige', code: '#F5F5DC', image: '/valentino (4).jpg' }
+    ]
+  },
+  { 
+    id: '4', 
+    name: 'Statement Collar Blouse', 
+    image: '/valentino (4).jpg', 
+    price: 980.00, 
+    rating: 4.6,
+    colors: [
+      { name: 'White', code: '#FFFFFF', image: '/valentino (4).jpg' },
+      { name: 'Black', code: '#000000', image: '/valentino (5).jpg' }
+    ]
+  },
+  { 
+    id: '5', 
+    name: 'Cashmere Knit Sweater', 
+    image: '/valentino (5).jpg', 
+    price: 1750.00, 
+    rating: 4.8,
+    colors: [
+      { name: 'Cream', code: '#FFFDD0', image: '/valentino (5).jpg' },
+      { name: 'Grey', code: '#808080', image: '/valentino (6).jpg' }
+    ]
+  },
+  { 
+    id: '6', 
+    name: 'Strappy Evening Top', 
+    image: '/valentino (6).jpg', 
+    price: 890.00, 
+    rating: 4.7,
+    colors: [
+      { name: 'Black', code: '#000000', image: '/valentino (6).jpg' },
+      { name: 'Red', code: '#FF0000', image: '/valentino.jpg' }
+    ]
+  }
+];
+
 const BrandPage: React.FC = () => {
   const navigate = useNavigate();
   const { brandId } = useParams();
@@ -102,6 +244,13 @@ const BrandPage: React.FC = () => {
   const [favorites, setFavorites] = useState<string[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [showCartConfirmation, setShowCartConfirmation] = useState(false);
+
+  // Select products based on brandId
+  const products = brandId?.toLowerCase() === 'chanel' 
+    ? chanelProducts 
+    : brandId?.toLowerCase() === 'valentino'
+    ? valentinoProducts
+    : pradaProducts;
 
   const handleBackToBrands = () => {
     navigate('/');
@@ -174,7 +323,7 @@ const BrandPage: React.FC = () => {
 
         {/* Products Grid */}
         <div className={`products-grid ${isMenuOpen ? 'blur' : ''}`}>
-          {dummyProducts.map((product) => (
+          {products.map((product) => (
             <div 
               key={product.id} 
               className="product-card"
