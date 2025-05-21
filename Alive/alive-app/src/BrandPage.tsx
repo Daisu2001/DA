@@ -256,6 +256,7 @@ const BrandPage: React.FC = () => {
   const [showCartConfirmation, setShowCartConfirmation] = useState(false);
   const [selectedColor, setSelectedColor] = useState<Color | null>(null);
   const [cartCount, setCartCount] = useState(0);
+  const [isNewBadge, setIsNewBadge] = useState(false);
 
   // Select products based on brandId
   const products = brandId?.toLowerCase() === 'chanel' 
@@ -349,12 +350,31 @@ const BrandPage: React.FC = () => {
   // Update cart count whenever it changes
   useEffect(() => {
     const updateCartCount = () => {
-      const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
-      const totalItems = cartItems.reduce((sum: number, item: CartItem) => sum + (item.quantity || 0), 0);
-      setCartCount(totalItems);
+      try {
+        const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
+        if (!Array.isArray(cartItems)) {
+          setCartCount(0);
+          return;
+        }
+        const totalItems = cartItems.reduce((sum: number, item: CartItem) => {
+          const quantity = item?.quantity || 0;
+          return sum + quantity;
+        }, 0);
+        
+        if (totalItems !== cartCount) {
+          setCartCount(totalItems);
+          setIsNewBadge(true);
+          setTimeout(() => setIsNewBadge(false), 300);
+        }
+      } catch (error) {
+        console.error('Error updating cart count:', error);
+        setCartCount(0);
+      }
     };
 
+    // Initial update
     updateCartCount();
+
     // Listen for storage changes and custom cart updates
     window.addEventListener('storage', updateCartCount);
     window.addEventListener('cartUpdated', updateCartCount);
@@ -363,7 +383,7 @@ const BrandPage: React.FC = () => {
       window.removeEventListener('storage', updateCartCount);
       window.removeEventListener('cartUpdated', updateCartCount);
     };
-  }, []);
+  }, [cartCount]);
 
   // Add color selection handler
   const handleColorSelect = (color: Color) => {
@@ -383,7 +403,11 @@ const BrandPage: React.FC = () => {
           </div>
           <button className="icon-button cart-button" onClick={() => navigate('/cart')}>
             <ShoppingCart size={24} />
-            {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+            {cartCount > 0 && (
+              <span className={`cart-badge ${isNewBadge ? 'new' : ''}`}>
+                {cartCount}
+              </span>
+            )}
           </button>
         </nav>
 
@@ -515,7 +539,11 @@ const BrandPage: React.FC = () => {
               onClick={() => navigate('/cart')}
             >
               <ShoppingCart size={24} />
-              {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+              {cartCount > 0 && (
+                <span className={`cart-badge ${isNewBadge ? 'new' : ''}`}>
+                  {cartCount}
+                </span>
+              )}
             </button>
             <button 
               className="menu-item icon-button"
